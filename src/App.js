@@ -5,6 +5,7 @@ export default function App() {
   const [outputAmount, setOutputAmount] = useState("");
   const [currencyFrom, setCurrencyFrom] = useState("USD");
   const [currencyTo, setCurrencyTo] = useState("USD");
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleAmountForExchange(data) {
     setAmountForExchange(Number(data));
@@ -21,10 +22,7 @@ export default function App() {
   useEffect(
     function () {
       async function getCurrencyRate() {
-        if (currencyFrom === currencyTo) {
-          setOutputAmount(amountForExchange);
-          return;
-        }
+        setIsLoading(true);
 
         const res = await fetch(
           `https://api.frankfurter.dev/v1/latest?base=${currencyFrom}&symbols=${currencyTo}`
@@ -37,12 +35,19 @@ export default function App() {
         );
 
         setOutputAmount(convertedAmount);
+
+        setIsLoading(false);
+      }
+
+      if (currencyFrom === currencyTo) {
+        setOutputAmount(amountForExchange);
+        return;
       }
 
       getCurrencyRate();
     },
 
-    [amountForExchange, currencyFrom, currencyTo]
+    [amountForExchange, currencyFrom, currencyTo, isLoading]
   );
 
   return (
@@ -51,10 +56,12 @@ export default function App() {
         type="number"
         value={amountForExchange}
         onChange={(e) => handleAmountForExchange(e.target.value)}
+        disabled={isLoading}
       />
       <select
         value={currencyFrom}
         onChange={(e) => handleCurrencyFrom(e.target.value)}
+        disabled={isLoading}
       >
         <option value="USD">USD</option>
         <option value="EUR">EUR</option>
@@ -64,6 +71,7 @@ export default function App() {
       <select
         value={currencyTo}
         onChange={(e) => handleCurrencyTo(e.target.value)}
+        disabled={isLoading}
       >
         <option value="USD">USD</option>
         <option value="EUR">EUR</option>
