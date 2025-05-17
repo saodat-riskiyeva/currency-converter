@@ -25,6 +25,7 @@ export default function App() {
           setOutputAmount(amountForExchange);
           return;
         }
+
         const res = await fetch(
           `https://api.frankfurter.dev/v1/latest?base=${currencyFrom}&symbols=${currencyTo}`
         );
@@ -37,8 +38,10 @@ export default function App() {
 
         setOutputAmount(convertedAmount);
       }
+
       getCurrencyRate();
     },
+
     [amountForExchange, currencyFrom, currencyTo]
   );
 
@@ -67,7 +70,11 @@ export default function App() {
         <option value="CAD">CAD</option>
         <option value="INR">INR</option>
       </select>
-      <p>{outputAmount}</p>
+      {outputAmount > 0 && (
+        <p>
+          {outputAmount} {currencyTo}
+        </p>
+      )}
     </div>
   );
 }
