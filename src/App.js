@@ -21,10 +21,10 @@ export default function App() {
   useEffect(
     function () {
       async function getCurrencyRate() {
-        console.log(currencyFrom);
-        console.log(currencyTo);
-
-        if (currencyFrom === currencyTo) return;
+        if (currencyFrom === currencyTo) {
+          setOutputAmount(amountForExchange);
+          return;
+        }
         const res = await fetch(
           `https://api.frankfurter.dev/v1/latest?base=${currencyFrom}&symbols=${currencyTo}`
         );
